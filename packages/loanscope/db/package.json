@@ -19,7 +19,7 @@
     "@loanscope/domain": "workspace:*",
     "@loanscope/lenders": "workspace:*",
     "better-sqlite3": "^11.9.1",
-    "drizzle-orm": "^0.44.2"
+    "drizzle-orm": "^0.45.2"
   },
   "engines": {
     "node": ">=22"
