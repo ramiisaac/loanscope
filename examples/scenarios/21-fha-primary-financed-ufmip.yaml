@@ -1,0 +1,96 @@
+# Example 21 — FHA primary purchase, UFMIP financed into the loan.
+#
+# Companion to 20-fha-primary.yaml. Same borrower, same property, same down
+# payment in cash; the only material change is `financedUpfrontFees: true`,
+# which signals that the FHA Upfront MIP (1.75% of the base loan amount) is
+# rolled into the financed balance rather than paid at close.
+#
+# Demonstrates the baseLoanAmount vs loanAmount distinction:
+#   - baseLoanAmount = purchasePrice - downPayment = $400,000 - $14,000
+#                    = $386,000 (the FHA-eligible base for MIP and LTV math)
+#   - UFMIP         = 0.0175 * baseLoanAmount        ≈ $6,755
+#   - loanAmount    = baseLoanAmount + UFMIP         ≈ $392,755
+#
+# `requestedLoanAmount` is the financed (note) amount including UFMIP, so
+# `purchasePrice - downPayment != requestedLoanAmount` would normally trip
+# the schema's loan/down/price consistency check. To keep this example
+# self-consistent at the scenario level, the UFMIP is treated as a separate
+# financing component handled by the engine's government-fees edge; the
+# scenario itself declares the base loan (no financed UFMIP rolled into
+# `requestedLoanAmount`) and sets `financedUpfrontFees: true` to opt the
+# downstream calculation into the financed-UFMIP code path.
+#
+# Smoke command:
+#   pnpm loanscope evaluate --config examples/scenarios/21-fha-primary-financed-ufmip.yaml
+
+transaction:
+  id: fha-primary-financed-ufmip
+  productSource:
+    kind: generic
+  financedUpfrontFees: true
+  scenario:
+    loanPurpose: Purchase
+    occupancy: Primary
+    propertyType: SFR
+    requestedLoanAmount: 386000
+    purchasePrice: 400000
+    downPayment: 14000
+    appraisedValue: 400000
+    units: 1
+    location:
+      stateCode: TX
+      county: Bexar
+    rateNote:
+      noteRatePct: 7.0
+      amortizationMonths: 360
+      productKind: Fixed
+    monthlyHousing:
+      propertyTax: 583
+      insurance: 145
+      hoa: 0
+      mi: 177  # FHA annual MIP 0.55% on $386,000 base loan, expressed monthly
+    closingCosts:
+      estimatedTotal: 11500
+
+  borrowers:
+    - id: b1
+      fico: 680
+      ficoScores: [678, 680, 684]
+      incomes:
+        - id: inc_b1_w2
+          borrowerId: b1
+          type: W2
+          monthlyAmount: 8500
+          qualifying: true
+
+  assets:
+    - id: checking_b1
+      type: Checking
+      ownerBorrowerIds: [b1]
+      amount: 28000
+      canUseForClose: true
+      canUseForReserves: true
+    - id: savings_b1
+      type: Savings
+      ownerBorrowerIds: [b1]
+      amount: 15000
+      canUseForClose: true
+      canUseForReserves: true
+
+  liabilities:
+    - id: auto_b1
+      type: Auto
+      borrowerIds: [b1]
+      monthlyPayment: 425
+      unpaidBalance: 16500
+    - id: cc_b1
+      type: CreditCard
+      borrowerIds: [b1]
+      monthlyPayment: 95
+      unpaidBalance: 2800
+
+  variants:
+    - id: default
+      label: FHA primary, UFMIP financed
+      includedBorrowerIds: [b1]
+      forcePayoffLiabilityIds: []

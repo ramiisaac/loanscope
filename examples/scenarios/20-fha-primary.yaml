@@ -1,0 +1,90 @@
+# Example 20 — FHA primary purchase, monthly MIP in PITI, UFMIP paid at close.
+#
+# Demonstrates:
+#   - Government-program scenario sized to clear FHA's 96.5% primary LTV cap
+#     and 580 minimum FICO, so the FHA product is structurally eligible when
+#     the engine matches against the generic product universe.
+#   - `monthlyHousing.mi` carries the FHA monthly mortgage insurance premium
+#     (annual MIP, expressed monthly) so it flows into PITI for DTI math.
+#   - `financedUpfrontFees: false` declares that the 1.75% Upfront MIP is
+#     paid at close (cash) rather than rolled into the loan; companion file
+#     21-fha-primary-financed-ufmip.yaml flips this and demonstrates the
+#     baseLoanAmount vs loanAmount distinction.
+#
+# Loan sizing: $400,000 purchase, $14,000 down (3.5%), $386,000 base loan.
+# Monthly MIP at 0.55% annual on the base loan ≈ $176.92/mo.
+#
+# Smoke command:
+#   pnpm loanscope evaluate --config examples/scenarios/20-fha-primary.yaml
+
+transaction:
+  id: fha-primary
+  productSource:
+    kind: generic
+  financedUpfrontFees: false
+  scenario:
+    loanPurpose: Purchase
+    occupancy: Primary
+    propertyType: SFR
+    requestedLoanAmount: 386000
+    purchasePrice: 400000
+    downPayment: 14000
+    appraisedValue: 400000
+    units: 1
+    location:
+      stateCode: TX
+      county: Bexar
+    rateNote:
+      noteRatePct: 7.0
+      amortizationMonths: 360
+      productKind: Fixed
+    monthlyHousing:
+      propertyTax: 583
+      insurance: 145
+      hoa: 0
+      mi: 177  # FHA annual MIP 0.55% on $386,000 base loan, expressed monthly
+    closingCosts:
+      estimatedTotal: 11500
+
+  borrowers:
+    - id: b1
+      fico: 680
+      ficoScores: [678, 680, 684]
+      incomes:
+        - id: inc_b1_w2
+          borrowerId: b1
+          type: W2
+          monthlyAmount: 8500
+          qualifying: true
+
+  assets:
+    - id: checking_b1
+      type: Checking
+      ownerBorrowerIds: [b1]
+      amount: 32000
+      canUseForClose: true
+      canUseForReserves: true
+    - id: savings_b1
+      type: Savings
+      ownerBorrowerIds: [b1]
+      amount: 18000
+      canUseForClose: true
+      canUseForReserves: true
+
+  liabilities:
+    - id: auto_b1
+      type: Auto
+      borrowerIds: [b1]
+      monthlyPayment: 425
+      unpaidBalance: 16500
+    - id: cc_b1
+      type: CreditCard
+      borrowerIds: [b1]
+      monthlyPayment: 95
+      unpaidBalance: 2800
+
+  variants:
+    - id: default
+      label: FHA primary, UFMIP paid at close
+      includedBorrowerIds: [b1]
+      forcePayoffLiabilityIds: []

@@ -1,0 +1,166 @@
+# Full Scenario with Simulation Plan
+# Two-borrower purchase with multiple income, asset, and liability streams
+
+transaction:
+  id: full-scenario
+  scenario:
+    requestedLoanAmount: 900000
+    purchasePrice: 1125000
+    appraisedValue: 1125000
+    downPayment: 225000
+    occupancy: Primary
+    loanPurpose: Purchase
+    propertyType: SFR
+    units: 1
+    location:
+      stateCode: CA
+      county: Los Angeles
+    rateNote:
+      noteRatePct: 6.875
+      amortizationMonths: 360
+      productKind: Fixed
+    monthlyHousing:
+      propertyTax: 1172
+      insurance: 280
+      hoa: 0
+      mi: 0
+    closingCosts:
+      estimatedTotal: 18000
+
+  productSource:
+    kind: generic
+
+  borrowers:
+    - id: b1
+      fico: 740
+      ficoScores: [740, 745, 738]
+      incomes:
+        - id: inc_b1_w2
+          borrowerId: b1
+          type: W2
+          monthlyAmount: 15000
+          qualifying: true
+        - id: inc_b1_bonus
+          borrowerId: b1
+          type: Bonus
+          monthlyAmount: 2500
+          qualifying: true
+        - id: inc_b1_rsu
+          borrowerId: b1
+          type: RSU
+          monthlyAmount: 3000
+          qualifying: true
+
+    - id: b2
+      fico: 720
+      ficoScores: [720, 725, 718]
+      incomes:
+        - id: inc_b2_w2
+          borrowerId: b2
+          type: W2
+          monthlyAmount: 8000
+          qualifying: true
+        - id: inc_b2_rental
+          borrowerId: b2
+          type: Rental
+          monthlyAmount: 1800
+          qualifying: true
+
+  assets:
+    - id: checking_b1
+      type: Checking
+      ownerBorrowerIds: [b1]
+      amount: 180000
+      canUseForClose: true
+      canUseForReserves: true
+    - id: savings_b1
+      type: Savings
+      ownerBorrowerIds: [b1]
+      amount: 120000
+      canUseForClose: true
+      canUseForReserves: true
+    - id: brokerage_b1
+      type: Brokerage
+      ownerBorrowerIds: [b1]
+      amount: 200000
+      haircutRatio: 0.7
+      canUseForClose: false
+      canUseForReserves: true
+    - id: retirement_b1
+      type: Retirement401k
+      ownerBorrowerIds: [b1]
+      amount: 350000
+      haircutRatio: 0.6
+      canUseForClose: false
+      canUseForReserves: true
+    - id: checking_b2
+      type: Checking
+      ownerBorrowerIds: [b2]
+      amount: 45000
+      canUseForClose: true
+      canUseForReserves: true
+    - id: savings_b2
+      type: Savings
+      ownerBorrowerIds: [b2]
+      amount: 30000
+      canUseForClose: true
+      canUseForReserves: true
+
+  liabilities:
+    - id: auto_b1
+      type: Auto
+      borrowerIds: [b1]
+      monthlyPayment: 620
+      unpaidBalance: 18000
+    - id: cc_b1
+      type: CreditCard
+      borrowerIds: [b1]
+      monthlyPayment: 300
+      unpaidBalance: 8500
+    - id: sl_b2
+      type: StudentLoan
+      borrowerIds: [b2]
+      monthlyPayment: 480
+      unpaidBalance: 42000
+    - id: cc_b2
+      type: CreditCard
+      borrowerIds: [b2]
+      monthlyPayment: 150
+      unpaidBalance: 3200
+    - id: personal_b2
+      type: PersonalLoan
+      borrowerIds: [b2]
+      monthlyPayment: 350
+      unpaidBalance: 9500
+
+  variants:
+    - id: joint
+      label: Joint (B1 + B2)
+      includedBorrowerIds: [b1, b2]
+      forcePayoffLiabilityIds: []
+
+    - id: joint-payoff-cc
+      label: Joint with CC payoffs
+      includedBorrowerIds: [b1, b2]
+      forcePayoffLiabilityIds: [cc_b1, cc_b2]
+
+    - id: solo
+      label: Solo (B1 only)
+      includedBorrowerIds: [b1]
+      forcePayoffLiabilityIds: []
+
+simulation:
+  borrowerSets:
+    - [b1]
+    - [b1, b2]
+  payoffCandidates: [auto_b1, cc_b1, sl_b2, cc_b2, personal_b2]
+  maxPayoffCount: 2
+  maxLoanPaydown: 50000
+  maxDownPaymentAdjust: 25000
+  objectives:
+    - MaximizeEligible
+    - MinimizeCash
+  limits:
+    maxStates: 100
+    maxDepth: 3
+    timeoutMs: 5000

@@ -1,0 +1,91 @@
+transaction:
+  id: txn_default
+  productSource:
+    kind: generic
+  scenario:
+    loanPurpose: Purchase
+    occupancy: Primary
+    propertyType: SFR
+    requestedLoanAmount: 900000
+    purchasePrice: 1125000
+    downPayment: 225000
+    rateNote:
+      noteRatePct: 6.875
+      amortizationMonths: 360
+      productKind: Fixed
+    monthlyHousing:
+      propertyTax: 600
+      insurance: 125
+      hoa: 0
+      mi: 0
+      floodInsurance: 0
+    closingCosts:
+      estimatedTotal: 15000
+    units: 1
+    appraisedValue: 1125000
+    location:
+      stateCode: CA
+      isHighCostArea: false
+  borrowers:
+    - id: b1
+      fico: 740
+      incomes:
+        - id: inc1
+          borrowerId: b1
+          type: W2
+          monthlyAmount: 12000
+    - id: b2
+      fico: 720
+      isNonOccupantCoBorrower: false
+      incomes:
+        - id: inc2
+          borrowerId: b2
+          type: W2
+          monthlyAmount: 8000
+  variants:
+    - id: joint
+      label: Joint
+      includedBorrowerIds: [b1, b2]
+    - id: solo
+      label: Solo
+      includedBorrowerIds: [b1]
+  assets:
+    - id: checking1
+      type: Checking
+      ownerBorrowerIds: [b1, b2]
+      amount: 150000
+    - id: business1
+      type: Business
+      ownerBorrowerIds: [b1]
+      amount: 200000
+  liabilities:
+    - id: auto1
+      type: Auto
+      borrowerIds: [b1]
+      monthlyPayment: 600
+      unpaidBalance: 15000
+      payoffAmount: 15000
+    - id: credit1
+      type: CreditCard
+      borrowerIds: [b2]
+      monthlyPayment: 200
+      unpaidBalance: 4000
+  ausFindings:
+    engine: DU
+    finding: Approve
+    reservesMonths: 6
+simulation:
+  borrowerSets:
+    - [b1, b2]
+    - [b1]
+  payoffCandidates: [auto1]
+  maxPayoffCount: 1
+  maxLoanPaydown: 20000
+  maxDownPaymentAdjust: 20000
+  objectives:
+    - MaximizeEligible
+    - MinimizeCash
+    - MinimizeActions
+  limits:
+    maxStates: 50
+    maxDepth: 3

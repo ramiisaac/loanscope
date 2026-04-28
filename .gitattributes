@@ -1,0 +1,66 @@
+# Normalize line endings repo-wide. Prevents whitespace drift between
+# Windows / macOS / Linux contributors. Applies to anything Git treats as
+# text by default; per-extension overrides below pin specifics.
+* text=auto eol=lf
+
+# Source and config — explicit text + LF, with diff/merge enabled.
+*.ts        text eol=lf
+*.tsx       text eol=lf
+*.js        text eol=lf
+*.cjs       text eol=lf
+*.mjs       text eol=lf
+*.json      text eol=lf
+*.jsonc     text eol=lf
+*.yaml      text eol=lf
+*.yml       text eol=lf
+*.md        text eol=lf
+*.html      text eol=lf
+*.css       text eol=lf
+*.scss      text eol=lf
+*.svg       text eol=lf
+*.toml      text eol=lf
+*.sh        text eol=lf
+*.editorconfig text eol=lf
+*.gitattributes text eol=lf
+*.gitignore text eol=lf
+.nvmrc      text eol=lf
+.npmrc      text eol=lf
+.prettierrc text eol=lf
+.prettierignore text eol=lf
+
+# Lockfile — text but never reformatted by line-ending normalization
+# (pnpm writes LF; pin explicitly so a Windows checkout cannot rewrite).
+pnpm-lock.yaml text eol=lf -diff
+
+# SQLite databases used as committed example/test fixtures.
+*.db        binary
+*.db-wal    binary
+*.db-shm    binary
+*.db-journal binary
+*.sqlite    binary
+*.sqlite3   binary
+
+# Image and other binary assets.
+*.png       binary
+*.jpg       binary
+*.jpeg      binary
+*.gif       binary
+*.ico       binary
+*.webp      binary
+*.pdf       binary
+*.zip       binary
+*.gz        binary
+*.tar       binary
+*.tgz       binary
+*.woff      binary
+*.woff2     binary
+*.eot       binary
+*.ttf       binary
+*.otf       binary
+
+# Generated TypeScript declaration / map files inside committed fixtures
+# stay text + LF so contributors on Windows checkouts do not see spurious
+# diff churn if any leak into a fixture tree.
+*.d.ts      text eol=lf
+*.d.ts.map  text eol=lf
+*.js.map    text eol=lf

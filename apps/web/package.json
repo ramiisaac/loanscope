@@ -1,0 +1,50 @@
+{
+  "name": "web",
+  "version": "0.0.1",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "build": "next build",
+    "dev": "next dev --turbopack",
+    "lint": "eslint . --max-warnings 0",
+    "clean": "rimraf .next .turbo",
+    "test": "echo 'No tests yet'",
+    "test:watch": "echo 'No tests yet'",
+    "start": "next start",
+    "lint:fix": "eslint . --fix",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@loanscope/compare": "workspace:*",
+    "@loanscope/config": "workspace:*",
+    "@loanscope/db": "workspace:*",
+    "@loanscope/domain": "workspace:*",
+    "@loanscope/engine": "workspace:*",
+    "@loanscope/lenders": "workspace:*",
+    "@loanscope/products": "workspace:*",
+    "@loanscope/sim": "workspace:*",
+    "@workspace/ui": "workspace:*",
+    "lucide-react": "^1.6.0",
+    "next": "16.2.1",
+    "next-themes": "^0.4.6",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.2.2",
+    "@types/node": "^25.5.0",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "@config/eslint": "workspace:^",
+    "@config/typescript": "workspace:*",
+    "eslint": "^10.1.0",
+    "typescript": "^5.9.3"
+  },
+  "license": "MIT",
+  "author": "Rami Isaac <raisaac@icloud.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ramiisaac/loanscope.git",
+    "directory": "apps/web"
+  }
+}

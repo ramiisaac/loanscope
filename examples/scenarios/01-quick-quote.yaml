@@ -1,0 +1,41 @@
+# Example 01 — minimal quick-quote-equivalent scenario.
+#
+# Demonstrates the smallest valid `transaction` config that `evaluate` will
+# accept: one borrower, one variant, one income stream, no liabilities, no
+# assets. This is the config-file analogue of the flag-driven `quote`
+# command:
+#
+#   pnpm loanscope quote --loan 1000000 --price 1250000 --fico 740
+#
+# Smoke command (config form):
+#   pnpm loanscope evaluate --config examples/scenarios/01-quick-quote.yaml
+
+transaction:
+  id: quick-quote
+  productSource:
+    kind: generic
+  scenario:
+    loanPurpose: Purchase
+    occupancy: Primary
+    propertyType: SFR
+    requestedLoanAmount: 1000000
+    purchasePrice: 1250000
+    downPayment: 250000
+    rateNote:
+      noteRatePct: 6.875
+      amortizationMonths: 360
+      productKind: Fixed
+    closingCosts:
+      estimatedTotal: 15000
+  borrowers:
+    - id: b1
+      fico: 740
+      incomes:
+        - id: inc1
+          borrowerId: b1
+          type: W2
+          monthlyAmount: 18000
+  variants:
+    - id: solo
+      label: Solo
+      includedBorrowerIds: [b1]

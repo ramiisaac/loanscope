@@ -1,0 +1,44 @@
+{
+  "name": "@workspace/utils",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsup src/index.ts --format esm --dts",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "lint": "eslint .",
+    "clean": "rimraf dist",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "csv-parse": "^6.2.1",
+    "csv-stringify": "^6.7.0",
+    "fs-extra": "^11.3.4",
+    "globby": "^16.1.1",
+    "yaml": "^2.8.3"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "^11.0.4",
+    "@config/eslint": "workspace:*",
+    "@config/typescript": "workspace:*",
+    "eslint": "^10.1.0",
+    "tsup": "^8.5.1",
+    "typescript": "^6.0.2",
+    "vitest": "^4.1.1"
+  },
+  "license": "MIT",
+  "author": "Rami Isaac <raisaac@icloud.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ramiisaac/loanscope",
+    "directory": "packages/utils"
+  },
+  "homepage": "https://github.com/ramiisaac/loanscope#readme",
+  "bugs": {
+    "url": "https://github.com/ramiisaac/loanscope/issues"
+  },
+  "keywords": []
+}

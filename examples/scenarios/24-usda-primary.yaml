@@ -1,0 +1,94 @@
+# Example 24 — USDA Guaranteed Rural Housing primary purchase.
+#
+# Demonstrates:
+#   - USDA-eligible primary purchase sized to 100% LTV (no down payment),
+#     consistent with the USDA Section 502 Guaranteed program. Loan amount
+#     equals purchase price; the engine accepts loan == price for USDA
+#     structurally.
+#   - The two USDA government fees flow through downstream calculations:
+#       * 1.00% upfront guarantee fee on the base loan amount (~$2,750)
+#       * 0.35% annual fee on the average scheduled balance, expressed
+#         monthly in `monthlyHousing.mi` so it lands in PITI/DTI math.
+#         Annual fee on $275,000 ≈ $962.50/yr ≈ $80.21/mo.
+#   - `financedUpfrontFees: false` declares the upfront guarantee fee is
+#     paid at close rather than rolled into the financed balance.
+#   - Property location uses a non-MSA county appropriate for USDA's rural
+#     eligibility footprint; rural designation itself is governed by USDA
+#     property maps and is not modeled in the scenario schema.
+#
+# Loan sizing: $275,000 purchase, $0 down, $275,000 loan (100% LTV).
+#
+# Smoke command:
+#   pnpm loanscope evaluate --config examples/scenarios/24-usda-primary.yaml
+
+transaction:
+  id: usda-primary
+  productSource:
+    kind: generic
+  financedUpfrontFees: false
+  scenario:
+    loanPurpose: Purchase
+    occupancy: Primary
+    propertyType: SFR
+    requestedLoanAmount: 275000
+    purchasePrice: 275000
+    downPayment: 0
+    appraisedValue: 275000
+    units: 1
+    location:
+      stateCode: IA
+      county: Madison
+    rateNote:
+      noteRatePct: 6.625
+      amortizationMonths: 360
+      productKind: Fixed
+    monthlyHousing:
+      propertyTax: 286
+      insurance: 110
+      hoa: 0
+      mi: 80  # USDA annual fee 0.35% on $275,000 base loan, expressed monthly
+    closingCosts:
+      estimatedTotal: 8500
+
+  borrowers:
+    - id: b1
+      fico: 680
+      ficoScores: [678, 680, 683]
+      incomes:
+        - id: inc_b1_w2
+          borrowerId: b1
+          type: W2
+          monthlyAmount: 6200
+          qualifying: true
+
+  assets:
+    - id: checking_b1
+      type: Checking
+      ownerBorrowerIds: [b1]
+      amount: 14000
+      canUseForClose: true
+      canUseForReserves: true
+    - id: savings_b1
+      type: Savings
+      ownerBorrowerIds: [b1]
+      amount: 9500
+      canUseForClose: true
+      canUseForReserves: true
+
+  liabilities:
+    - id: auto_b1
+      type: Auto
+      borrowerIds: [b1]
+      monthlyPayment: 295
+      unpaidBalance: 11400
+    - id: cc_b1
+      type: CreditCard
+      borrowerIds: [b1]
+      monthlyPayment: 65
+      unpaidBalance: 1850
+
+  variants:
+    - id: default
+      label: USDA primary purchase, 100% LTV, upfront fee paid at close
+      includedBorrowerIds: [b1]
+      forcePayoffLiabilityIds: []

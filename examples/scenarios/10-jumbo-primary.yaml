@@ -1,0 +1,74 @@
+# Jumbo Primary Residence - Purchase
+# $1M loan, $1.25M purchase, 740 FICO, strong income and assets
+
+transaction:
+  id: jumbo-primary
+  productSource:
+    kind: generic
+  scenario:
+    requestedLoanAmount: 1000000
+    purchasePrice: 1250000
+    appraisedValue: 1250000
+    downPayment: 250000
+    occupancy: Primary
+    loanPurpose: Purchase
+    propertyType: SFR
+    units: 1
+    location:
+      stateCode: CA
+      county: Los Angeles
+    rateNote:
+      noteRatePct: 6.875
+      amortizationMonths: 360
+      productKind: Fixed
+    monthlyHousing:
+      propertyTax: 1302
+      insurance: 300
+      hoa: 0
+      mi: 0
+    closingCosts:
+      estimatedTotal: 20000
+
+  borrowers:
+    - id: b1
+      fico: 740
+      ficoScores: [738, 740, 745]
+      incomes:
+        - id: inc_b1_w2
+          borrowerId: b1
+          type: W2
+          monthlyAmount: 20000
+          qualifying: true
+        - id: inc_b1_bonus
+          borrowerId: b1
+          type: Bonus
+          monthlyAmount: 4000
+          qualifying: true
+
+  assets:
+    - id: checking_b1
+      type: Checking
+      ownerBorrowerIds: [b1]
+      amount: 500000
+      canUseForClose: true
+      canUseForReserves: true
+    - id: brokerage_b1
+      type: Brokerage
+      ownerBorrowerIds: [b1]
+      amount: 200000
+      haircutRatio: 0.7
+      canUseForClose: false
+      canUseForReserves: true
+
+  liabilities:
+    - id: auto_b1
+      type: Auto
+      borrowerIds: [b1]
+      monthlyPayment: 650
+      unpaidBalance: 22000
+
+  variants:
+    - id: default
+      label: Default
+      includedBorrowerIds: [b1]
+      forcePayoffLiabilityIds: []

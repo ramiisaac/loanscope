@@ -1,0 +1,22 @@
+{
+  "extends": "@config/typescript/mortgage-lib.json",
+  "compilerOptions": {
+    "rootDir": "..",
+    "paths": {
+      "@loanscope/calculations": ["../calculations/src/index.ts"],
+      "@loanscope/calculations/*": ["../calculations/src/*"],
+      "@loanscope/domain": ["../domain/src/index.ts"],
+      "@loanscope/domain/*": ["../domain/src/*"],
+      "@loanscope/program-rules": ["../program-rules/src/index.ts"],
+      "@loanscope/program-rules/*": ["../program-rules/src/*"],
+      "@loanscope/graph": ["../graph/src/index.ts"],
+      "@loanscope/graph/*": ["../graph/src/*"],
+      "@loanscope/math": ["../math/src/index.ts"],
+      "@loanscope/math/*": ["../math/src/*"],
+      "@loanscope/products": ["../products/src/index.ts"],
+      "@loanscope/products/*": ["../products/src/*"],
+    },
+  },
+  "include": ["src/**/*"],
+  "exclude": ["dist", "node_modules"],
+}

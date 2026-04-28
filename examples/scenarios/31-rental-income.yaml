@@ -1,0 +1,107 @@
+# Example 31 — Borrower with W2 + Rental income, 75% rental factor.
+#
+# Demonstrates:
+#   - A single borrower carrying two qualifying income streams: W2 wages
+#     and Rental income from a separately-owned investment property.
+#   - The Rental income line is declared at gross monthly receipt
+#     ($3,200/mo). The FHA, VA, USDA, and PortfolioBase products carry
+#     `incomePolicies.perIncomeType[Rental] = { kind: "PercentOfStated",
+#     factor: 0.75 }` and `maxRentalFactor: 0.75`, so the engine
+#     automatically discounts gross rental to 75% qualifying ($2,400/mo)
+#     when matching against those products. Conventional/Jumbo products
+#     without a rental income policy will use the stated amount; the
+#     contrast is the point of the demo.
+#   - This scenario does NOT set `monthlyHousing` for the rental property
+#     itself; the Rental income line is treated as net-of-mortgage by the
+#     income-policy contract. Investment-property liabilities (taxes,
+#     insurance, HOA on the rental) would be modeled separately if the
+#     rental carried a financed mortgage subject to DTI inclusion.
+#
+# Loan sizing: $625,000 purchase, $125,000 down (20%), $500,000 loan
+# (80% LTV, conventional conforming territory in most counties).
+#
+# Smoke command:
+#   pnpm loanscope evaluate --config examples/scenarios/31-rental-income.yaml
+
+transaction:
+  id: rental-income
+  productSource:
+    kind: generic
+  scenario:
+    loanPurpose: Purchase
+    occupancy: Primary
+    propertyType: SFR
+    requestedLoanAmount: 500000
+    purchasePrice: 625000
+    downPayment: 125000
+    appraisedValue: 625000
+    units: 1
+    location:
+      stateCode: NC
+      county: Wake
+    rateNote:
+      noteRatePct: 6.625
+      amortizationMonths: 360
+      productKind: Fixed
+    monthlyHousing:
+      propertyTax: 521
+      insurance: 165
+      hoa: 0
+      mi: 0
+    closingCosts:
+      estimatedTotal: 12500
+
+  borrowers:
+    - id: b1
+      fico: 740
+      ficoScores: [738, 740, 744]
+      incomes:
+        - id: inc_b1_w2
+          borrowerId: b1
+          type: W2
+          monthlyAmount: 11000
+          qualifying: true
+        - id: inc_b1_rental
+          borrowerId: b1
+          type: Rental
+          monthlyAmount: 3200  # Gross rental; FHA/VA/USDA/PortfolioBase apply 0.75 factor
+          qualifying: true
+
+  assets:
+    - id: checking_b1
+      type: Checking
+      ownerBorrowerIds: [b1]
+      amount: 165000
+      canUseForClose: true
+      canUseForReserves: true
+    - id: savings_b1
+      type: Savings
+      ownerBorrowerIds: [b1]
+      amount: 85000
+      canUseForClose: true
+      canUseForReserves: true
+    - id: brokerage_b1
+      type: Brokerage
+      ownerBorrowerIds: [b1]
+      amount: 140000
+      haircutRatio: 0.7
+      canUseForClose: false
+      canUseForReserves: true
+
+  liabilities:
+    - id: auto_b1
+      type: Auto
+      borrowerIds: [b1]
+      monthlyPayment: 480
+      unpaidBalance: 17200
+    - id: cc_b1
+      type: CreditCard
+      borrowerIds: [b1]
+      monthlyPayment: 125
+      unpaidBalance: 3650
+
+  variants:
+    - id: default
+      label: W2 + Rental (75% rental factor under FHA/VA/USDA/PortfolioBase)
+      includedBorrowerIds: [b1]
+      forcePayoffLiabilityIds: []

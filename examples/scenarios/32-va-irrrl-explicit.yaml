@@ -1,0 +1,104 @@
+# Example 32 — VA IRRRL via the explicit `IrrrlRefi` loan purpose.
+#
+# Demonstrates:
+#   - The first-class `LoanPurpose: IrrrlRefi` enum value (Feature 1). This
+#     is the preferred form going forward; the engine recognizes it directly
+#     in the VA funding-fee dispatch and resolves to the fixed 0.5% rate
+#     regardless of LTV bracket or `vaServiceContext.priorUse`.
+#   - Backward compatibility: the legacy signal — `LoanPurpose: RateTermRefi`
+#     plus `vaServiceContext.priorUse: true` — remains supported (see
+#     `examples/scenarios/23-va-irrrl.yaml`). New scenarios should prefer
+#     this explicit form because it removes the implicit dependency on the
+#     `priorUse` flag and makes the borrower intent unambiguous in audit
+#     trails and saved-scenario diffs.
+#   - Refinance shape: no `purchasePrice` / `downPayment`; `appraisedValue`
+#     drives LTV. The existing VA mortgage payoff is modeled as a Mortgage
+#     liability with `payoffAtClose: true` and a forced-payoff variant.
+#   - `disabilityExempt: false` keeps the IRRRL fee applicable; setting it
+#     to `true` would zero the funding fee per 38 USC 3729(c).
+#
+# Loan sizing: $385,000 IRRRL against $475,000 appraised value (~81% LTV).
+# IRRRL funding fee at 0.5% ≈ $1,925 (paid at close in this file).
+#
+# Smoke command:
+#   pnpm loanscope evaluate --config examples/scenarios/32-va-irrrl-explicit.yaml
+
+transaction:
+  id: va-irrrl-explicit
+  productSource:
+    kind: generic
+  financedUpfrontFees: false
+  scenario:
+    loanPurpose: IrrrlRefi          # First-class IRRRL signal (preferred)
+    occupancy: Primary
+    propertyType: SFR
+    requestedLoanAmount: 385000
+    appraisedValue: 475000
+    downPayment: 0
+    units: 1
+    location:
+      stateCode: VA
+      county: Prince William
+    rateNote:
+      noteRatePct: 5.875
+      amortizationMonths: 360
+      productKind: Fixed
+    monthlyHousing:
+      propertyTax: 495
+      insurance: 155
+      hoa: 0
+      mi: 0  # VA loans carry no monthly MI
+    closingCosts:
+      estimatedTotal: 9500
+    vaServiceContext:
+      # priorUse is irrelevant when loanPurpose=IrrrlRefi: the funding-fee
+      # dispatch returns 0.5% on the IrrrlRefi case unconditionally. The
+      # field is retained for downstream consumers that still inspect it.
+      priorUse: true
+      disabilityExempt: false
+      reserveOrGuard: false
+
+  borrowers:
+    - id: b1
+      fico: 740
+      ficoScores: [738, 740, 744]
+      incomes:
+        - id: inc_b1_w2
+          borrowerId: b1
+          type: W2
+          monthlyAmount: 10500
+          qualifying: true
+
+  assets:
+    - id: checking_b1
+      type: Checking
+      ownerBorrowerIds: [b1]
+      amount: 35000
+      canUseForClose: true
+      canUseForReserves: true
+    - id: savings_b1
+      type: Savings
+      ownerBorrowerIds: [b1]
+      amount: 28000
+      canUseForClose: true
+      canUseForReserves: true
+
+  liabilities:
+    - id: mortgage_existing
+      type: Mortgage
+      borrowerIds: [b1]
+      monthlyPayment: 2950
+      unpaidBalance: 383500
+      payoffAtClose: true
+      payoffAmount: 384200
+    - id: auto_b1
+      type: Auto
+      borrowerIds: [b1]
+      monthlyPayment: 410
+      unpaidBalance: 17800
+
+  variants:
+    - id: default
+      label: VA IRRRL via explicit IrrrlRefi enum (preferred contract)
+      includedBorrowerIds: [b1]
+      forcePayoffLiabilityIds: [mortgage_existing]

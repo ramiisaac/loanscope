@@ -1,0 +1,61 @@
+# Example — catalog import sample payload.
+#
+# Consumed by `loanscope db import --lender <id> --file <path>`. The top-level
+# `products` array holds ProductDefinition entries that satisfy the structural
+# contract enforced by validateProductStructure (non-empty id/name, valid
+# LoanType + Channel enums, at least one variant). The shape mirrors the
+# minimal round-trip fixtures used in db.test.ts so this file re-parses
+# cleanly through the repository layer.
+#
+# Smoke command:
+#   pnpm loanscope db import --lender uwm --file examples/catalogs/sample-uwm-catalog.yaml
+
+products:
+  - id: sample_catalog_agency_fixed_30
+    name: Sample Catalog Agency Fixed 30
+    loanType: Conventional
+    channel: Agency
+    family: Sample Catalog
+    variants:
+      - programKind: Fixed
+        amortization:
+          type: FullyAmortizing
+          qualifyingPaymentPolicy:
+            kind: NotePayment
+        terms:
+          - 360
+          - 240
+        constraints:
+          Primary:
+            maxLTVRatio: 0.95
+            minFico: 620
+          Secondary:
+            maxLTVRatio: 0.9
+            minFico: 680
+          Investment:
+            maxLTVRatio: 0.85
+            minFico: 700
+
+  - id: sample_catalog_agency_high_balance_30
+    name: Sample Catalog Agency High Balance 30
+    loanType: HighBalance
+    channel: Agency
+    family: Sample Catalog
+    variants:
+      - programKind: Fixed
+        amortization:
+          type: FullyAmortizing
+          qualifyingPaymentPolicy:
+            kind: NotePayment
+        terms:
+          - 360
+        constraints:
+          Primary:
+            maxLTVRatio: 0.9
+            minFico: 680
+          Secondary:
+            maxLTVRatio: 0.85
+            minFico: 700
+          Investment:
+            maxLTVRatio: 0.8
+            minFico: 720

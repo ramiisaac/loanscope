@@ -1,0 +1,25 @@
+import type { NodeDefinition } from "@loanscope/graph";
+
+export const outputNodes: NodeDefinition[] = [
+  { id: "ltvCheck", kind: "check", valueType: "Object" },
+  { id: "cltvCheck", kind: "check", valueType: "Object" },
+  { id: "dtiCheck", kind: "check", valueType: "Object" },
+  { id: "ficoCheck", kind: "check", valueType: "Object" },
+  { id: "loanAmountMinCheck", kind: "check", valueType: "Object" },
+  { id: "loanAmountMaxCheck", kind: "check", valueType: "Object" },
+  { id: "reservesCheck", kind: "check", valueType: "Object" },
+  { id: "cashToCloseCheck", kind: "check", valueType: "Object" },
+  { id: "occupancyCheck", kind: "check", valueType: "Object" },
+  { id: "purposeCheck", kind: "check", valueType: "Object" },
+  { id: "propertyTypeCheck", kind: "check", valueType: "Object" },
+  { id: "unitsCheck", kind: "check", valueType: "Object" },
+  { id: "borrowerRestrictionsCheck", kind: "check", valueType: "Object" },
+  { id: "stateRestrictionsCheck", kind: "check", valueType: "Object" },
+  { id: "cashOutCheck", kind: "check", valueType: "Object" },
+  { id: "buydownCheck", kind: "check", valueType: "Object" },
+  { id: "miCheck", kind: "check", valueType: "Object" },
+  { id: "ausCheck", kind: "check", valueType: "Object" },
+  { id: "appraisalCheck", kind: "check", valueType: "Object" },
+  { id: "allChecks", kind: "output", valueType: "Array" },
+  { id: "eligibility", kind: "output", valueType: "Boolean" },
+];

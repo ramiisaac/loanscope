@@ -1,0 +1,8 @@
+{
+  "extends": "@config/typescript/mortgage-lib.json",
+  "compilerOptions": {
+    "rootDir": "..",
+  },
+  "include": ["src/**/*"],
+  "exclude": ["dist", "node_modules"],
+}

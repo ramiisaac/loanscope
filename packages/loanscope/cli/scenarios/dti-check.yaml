@@ -1,0 +1,91 @@
+# DTI-focused scenario for mortgage evaluate command
+# Tests debt-to-income ratio checking with multiple income streams and liabilities
+transaction:
+  id: txn_dti_check
+  productSource:
+    kind: generic
+  scenario:
+    loanPurpose: Purchase
+    occupancy: Primary
+    propertyType: SFR
+    requestedLoanAmount: 400000
+    purchasePrice: 500000
+    downPayment: 100000
+    rateNote:
+      noteRatePct: 7.125
+      amortizationMonths: 360
+      productKind: Fixed
+    monthlyHousing:
+      propertyTax: 520
+      insurance: 150
+      hoa: 75
+      mi: 85
+      floodInsurance: 0
+    closingCosts:
+      estimatedTotal: 9500
+    units: 1
+    appraisedValue: 500000
+    location:
+      stateCode: TX
+      isHighCostArea: false
+  borrowers:
+    - id: b1
+      fico: 680
+      incomes:
+        - id: inc_w2
+          borrowerId: b1
+          type: W2
+          monthlyAmount: 6500
+        - id: inc_bonus
+          borrowerId: b1
+          type: Bonus
+          monthlyAmount: 1200
+    - id: b2
+      fico: 710
+      incomes:
+        - id: inc_w2_b2
+          borrowerId: b2
+          type: W2
+          monthlyAmount: 4800
+  variants:
+    - id: joint
+      label: Joint application
+      includedBorrowerIds: [b1, b2]
+    - id: solo
+      label: Solo primary borrower
+      includedBorrowerIds: [b1]
+  assets:
+    - id: checking1
+      type: Checking
+      ownerBorrowerIds: [b1, b2]
+      amount: 85000
+    - id: savings1
+      type: Savings
+      ownerBorrowerIds: [b1]
+      amount: 40000
+  liabilities:
+    - id: auto_b1
+      type: Auto
+      borrowerIds: [b1]
+      monthlyPayment: 475
+      unpaidBalance: 18000
+    - id: cc_b1
+      type: CreditCard
+      borrowerIds: [b1]
+      monthlyPayment: 150
+      unpaidBalance: 4200
+    - id: student_b2
+      type: StudentLoan
+      borrowerIds: [b2]
+      monthlyPayment: 380
+      unpaidBalance: 32000
+    - id: cc_b2
+      type: CreditCard
+      borrowerIds: [b2]
+      monthlyPayment: 100
+      unpaidBalance: 2800
+    - id: personal_b1
+      type: PersonalLoan
+      borrowerIds: [b1]
+      monthlyPayment: 250
+      unpaidBalance: 9000

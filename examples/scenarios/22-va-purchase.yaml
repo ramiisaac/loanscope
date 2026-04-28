@@ -1,0 +1,95 @@
+# Example 22 — VA purchase, 100% LTV primary, first-use funding fee.
+#
+# Demonstrates:
+#   - VA-eligible primary purchase sized to 100% LTV (no down payment), the
+#     hallmark VA benefit. Loan amount equals purchase price; the engine
+#     accepts loan == price for VA structurally.
+#   - `vaServiceContext` declares the three booleans required by the
+#     `vaServiceContextSchema`. `priorUse: false` signals first-use, which
+#     under the current B1 funding-fee contract maps to the 2.15% standard
+#     funding-fee tier for regular military first use at >= 95% LTV.
+#   - `disabilityExempt: false` keeps the funding fee applicable;
+#     `reserveOrGuard: false` selects the regular military fee schedule.
+#
+# Loan sizing: $450,000 purchase, $0 down, $450,000 loan (100% LTV).
+# First-use VA funding fee at 2.15% ≈ $9,675 (paid at close in this file;
+# 23-va-irrrl.yaml exercises the IRRRL fee path).
+#
+# Smoke command:
+#   pnpm loanscope evaluate --config examples/scenarios/22-va-purchase.yaml
+
+transaction:
+  id: va-purchase
+  productSource:
+    kind: generic
+  financedUpfrontFees: false
+  scenario:
+    loanPurpose: Purchase
+    occupancy: Primary
+    propertyType: SFR
+    requestedLoanAmount: 450000
+    purchasePrice: 450000
+    downPayment: 0
+    appraisedValue: 450000
+    units: 1
+    location:
+      stateCode: VA
+      county: Fairfax
+    rateNote:
+      noteRatePct: 6.75
+      amortizationMonths: 360
+      productKind: Fixed
+    monthlyHousing:
+      propertyTax: 469
+      insurance: 165
+      hoa: 0
+      mi: 0  # VA loans carry no monthly MI; the funding fee is the upfront cost
+    closingCosts:
+      estimatedTotal: 13500
+    vaServiceContext:
+      priorUse: false        # First-use entitlement → 2.15% funding-fee tier
+      disabilityExempt: false # Funding fee applies (no service-connected exemption)
+      reserveOrGuard: false   # Regular military fee schedule
+
+  borrowers:
+    - id: b1
+      fico: 720
+      ficoScores: [718, 720, 724]
+      incomes:
+        - id: inc_b1_w2
+          borrowerId: b1
+          type: W2
+          monthlyAmount: 9800
+          qualifying: true
+
+  assets:
+    - id: checking_b1
+      type: Checking
+      ownerBorrowerIds: [b1]
+      amount: 22000
+      canUseForClose: true
+      canUseForReserves: true
+    - id: savings_b1
+      type: Savings
+      ownerBorrowerIds: [b1]
+      amount: 18000
+      canUseForClose: true
+      canUseForReserves: true
+
+  liabilities:
+    - id: auto_b1
+      type: Auto
+      borrowerIds: [b1]
+      monthlyPayment: 380
+      unpaidBalance: 14200
+    - id: cc_b1
+      type: CreditCard
+      borrowerIds: [b1]
+      monthlyPayment: 110
+      unpaidBalance: 3400
+
+  variants:
+    - id: default
+      label: VA primary purchase, first-use, 100% LTV
+      includedBorrowerIds: [b1]
+      forcePayoffLiabilityIds: []

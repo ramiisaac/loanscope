@@ -1,0 +1,15 @@
+# Test fixture — batch mode list input.
+#
+# Consumed by `loanscope batch --list fixtures/batch/sample-batch-list.txt`.
+# One scenario config path per line. Blank lines and lines beginning with `#` are ignored by `readBatchList`, so comments and section breaks are safe to inline.
+#
+# Keep the list short and deterministic: the batch command evaluates every entry sequentially in-process, so each additional scenario proportionally extends smoke-test runtime.
+
+packages/loanscope/cli/scenarios/default.yaml
+
+# Jumbo flows
+examples/scenarios/10-jumbo-primary.yaml
+examples/scenarios/11-jumbo-refi.yaml
+
+# Conforming flow
+examples/scenarios/02-conforming-purchase.yaml

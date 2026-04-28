@@ -1,0 +1,87 @@
+# .prettierignore — paths Prettier must skip on `pnpm format`.
+# See `.prettierrc` for the formatting conventions applied to everything else.
+
+# ---------------------------------------------------------------------------
+# Generated build outputs
+# ---------------------------------------------------------------------------
+**/dist/**
+**/build/**
+**/.turbo/**
+**/.next/**
+**/coverage/**
+**/.tsbuildinfo
+**/*.tsbuildinfo
+
+# ---------------------------------------------------------------------------
+# Dependency trees
+# ---------------------------------------------------------------------------
+**/node_modules/**
+
+# ---------------------------------------------------------------------------
+# Lockfiles — managed by their respective tools, never hand-formatted.
+# ---------------------------------------------------------------------------
+pnpm-lock.yaml
+package-lock.json
+yarn.lock
+
+# ---------------------------------------------------------------------------
+# Binary / opaque fixtures
+# ---------------------------------------------------------------------------
+*.db
+*.db-wal
+*.db-shm
+*.db-journal
+*.sqlite
+*.sqlite3
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.ico
+*.webp
+*.pdf
+*.zip
+*.gz
+*.tar
+*.tgz
+*.woff
+*.woff2
+*.eot
+*.ttf
+*.otf
+
+# ---------------------------------------------------------------------------
+# Committed example scenarios — hand-authored YAML with deliberate comment
+# blocks, numeric prefix grouping, and per-section spacing that Prettier's
+# YAML reflow would obliterate. Re-formatting these would also break the
+# `pnpm loanscope evaluate --config examples/scenarios/<name>.yaml` smoke
+# contract by reordering keys in ways the loader does not depend on but
+# reviewers do read top-down.
+# ---------------------------------------------------------------------------
+examples/scenarios/**/*.yaml
+examples/catalogs/**/*.yaml
+examples/custom-products/**/*.yaml
+
+# ---------------------------------------------------------------------------
+# Test-only fixtures (textual but exercised verbatim by tests).
+# ---------------------------------------------------------------------------
+fixtures/**
+
+# ---------------------------------------------------------------------------
+# Local working area — gitignored, but explicit here so editor-on-save
+# Prettier integrations never touch in-progress loan-officer scenarios.
+# ---------------------------------------------------------------------------
+workspace/**
+
+# ---------------------------------------------------------------------------
+# Internal docs that intentionally diverge from Markdown reflow rules
+# (long single-line bullets, table widths, etc.).
+# ---------------------------------------------------------------------------
+docs/internal/**
+
+# ---------------------------------------------------------------------------
+# Sandbox-equivalent legacy paths (defensive — current tree no longer has
+# `sandbox/`, but a Prettier run during a partial migration must not touch
+# any reintroduced ad-hoc working dir).
+# ---------------------------------------------------------------------------
+sandbox/**

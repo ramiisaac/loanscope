@@ -1,0 +1,12 @@
+{
+  "extends": "@config/typescript/mortgage-lib.json",
+  "compilerOptions": {
+    "rootDir": "..",
+    "paths": {
+      "@loanscope/domain": ["../domain/src/index.ts"],
+      "@loanscope/domain/*": ["../domain/src/*"],
+    },
+  },
+  "include": ["src/**/*"],
+  "exclude": ["dist", "node_modules"],
+}

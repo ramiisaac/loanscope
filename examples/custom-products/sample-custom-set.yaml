@@ -1,0 +1,60 @@
+# Example — custom product set sample payload.
+#
+# Consumed by `loanscope db custom-product create --file <path>`. The top-level
+# `products` array holds ProductDefinition entries that satisfy the structural
+# contract enforced by validateProductStructure (non-empty id/name, valid
+# LoanType + Channel enums, at least one variant). Engine-level constraint
+# shapes mirror the minimal round-trip fixtures used in db.test.ts.
+#
+# Smoke command:
+#   pnpm loanscope db custom-product create --file examples/custom-products/sample-custom-set.yaml --name "Smoke Set"
+
+products:
+  - id: sample_custom_agency_fixed_30
+    name: Sample Custom Agency Fixed 30
+    loanType: Conventional
+    channel: Agency
+    family: Sample Custom
+    variants:
+      - programKind: Fixed
+        amortization:
+          type: FullyAmortizing
+          qualifyingPaymentPolicy:
+            kind: NotePayment
+        terms:
+          - 360
+        constraints:
+          Primary:
+            maxLTVRatio: 0.95
+            minFico: 620
+          Secondary:
+            maxLTVRatio: 0.9
+            minFico: 680
+          Investment:
+            maxLTVRatio: 0.85
+            minFico: 700
+
+  - id: sample_custom_portfolio_jumbo_30
+    name: Sample Custom Portfolio Jumbo 30
+    loanType: Jumbo
+    channel: Portfolio
+    family: Sample Custom
+    variants:
+      - programKind: Fixed
+        amortization:
+          type: FullyAmortizing
+          qualifyingPaymentPolicy:
+            kind: NotePayment
+        terms:
+          - 360
+          - 240
+        constraints:
+          Primary:
+            maxLTVRatio: 0.9
+            minFico: 700
+          Secondary:
+            maxLTVRatio: 0.8
+            minFico: 720
+          Investment:
+            maxLTVRatio: 0.75
+            minFico: 740

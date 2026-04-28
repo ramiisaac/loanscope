@@ -1,0 +1,71 @@
+# Conventional Conforming - Purchase
+# Standard conforming loan scenario: $500K loan, $625K price, 720 FICO
+
+transaction:
+  id: conforming-purchase
+  productSource:
+    kind: generic
+  scenario:
+    requestedLoanAmount: 500000
+    purchasePrice: 625000
+    appraisedValue: 625000
+    downPayment: 125000
+    occupancy: Primary
+    loanPurpose: Purchase
+    propertyType: SFR
+    units: 1
+    location:
+      stateCode: TX
+      county: Travis
+    rateNote:
+      noteRatePct: 6.5
+      amortizationMonths: 360
+      productKind: Fixed
+    monthlyHousing:
+      propertyTax: 1042
+      insurance: 200
+      hoa: 0
+      mi: 150
+    closingCosts:
+      estimatedTotal: 12000
+
+  borrowers:
+    - id: b1
+      fico: 720
+      ficoScores: [718, 720, 724]
+      incomes:
+        - id: inc_b1_w2
+          borrowerId: b1
+          type: W2
+          monthlyAmount: 12000
+          qualifying: true
+
+  assets:
+    - id: checking_b1
+      type: Checking
+      ownerBorrowerIds: [b1]
+      amount: 200000
+      canUseForClose: true
+      canUseForReserves: true
+
+  liabilities:
+    - id: cc_b1
+      type: CreditCard
+      borrowerIds: [b1]
+      monthlyPayment: 250
+      unpaidBalance: 6500
+    - id: auto_b1
+      type: Auto
+      borrowerIds: [b1]
+      monthlyPayment: 450
+      unpaidBalance: 14000
+
+  variants:
+    - id: default
+      label: Default
+      includedBorrowerIds: [b1]
+      forcePayoffLiabilityIds: []
+    - id: payoff-cc
+      label: Pay off credit card at close
+      includedBorrowerIds: [b1]
+      forcePayoffLiabilityIds: [cc_b1]

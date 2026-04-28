@@ -1,0 +1,80 @@
+{
+  "name": "@loanscope/cli",
+  "version": "0.1.0",
+  "type": "module",
+  "bin": {
+    "loanscope": "dist/index.js"
+  },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsup src/index.ts --format esm --dts",
+    "typecheck": "tsc -p tsconfig.check.json --noEmit",
+    "lint": "eslint .",
+    "clean": "rimraf dist .turbo",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "start": "node dist/index.js"
+  },
+  "dependencies": {
+    "@loanscope/compare": "workspace:*",
+    "@loanscope/config": "workspace:*",
+    "@loanscope/db": "workspace:*",
+    "@loanscope/domain": "workspace:*",
+    "@loanscope/engine": "workspace:*",
+    "@loanscope/lenders": "workspace:*",
+    "@loanscope/products": "workspace:*",
+    "@loanscope/sim": "workspace:*",
+    "chalk": "^5.6.2",
+    "cli-table3": "^0.6.5",
+    "commander": "^14.0.3",
+    "inquirer": "^13.3.2",
+    "ora": "^9.3.0"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "devDependencies": {
+    "@config/eslint": "workspace:*",
+    "eslint": "^10.1.0",
+    "vitest": "^4.1.1"
+  },
+  "license": "MIT",
+  "author": "Rami Isaac <raisaac@icloud.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ramiisaac/loanscope.git",
+    "directory": "packages/loanscope/cli"
+  },
+  "homepage": "https://github.com/ramiisaac/loanscope#readme",
+  "bugs": {
+    "url": "https://github.com/ramiisaac/loanscope/issues"
+  },
+  "keywords": [
+    "mortgage",
+    "underwriting",
+    "loanscope",
+    "cli",
+    "commander",
+    "sqlite"
+  ],
+  "private": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "sideEffects": [
+    "./dist/index.js"
+  ],
+  "files": [
+    "LICENSE",
+    "README.md",
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "description": "LoanScope command-line interface for mortgage scenario evaluation, comparison grids, goal-seek, simulation, and SQLite-backed scenario / catalog / audit persistence."
+}

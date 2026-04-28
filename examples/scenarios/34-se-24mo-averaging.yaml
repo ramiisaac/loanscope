@@ -1,0 +1,155 @@
+# Example 34 — Self-employed borrower with 24-month income averaging.
+#
+# Demonstrates:
+#   - The new `incomes[].historicalAmounts` field (Feature 4): a trailing
+#     per-month income series (most recent month last) supplied alongside a
+#     `SelfEmployed` income stream. The series feeds the math-layer
+#     averaging bridge in `@loanscope/math#resolveQualifyingPolicy`: when a
+#     `ProgramIncomePolicies.selfEmployedAveragingMonths` is supplied
+#     alongside the stream, an SE stream with no explicit `qualifyingPolicy`
+#     and `historicalAmounts.length >= lookback` resolves to
+#     `{ kind: "AveragedMonths", monthsLookback, historicalAmounts:
+#     <last lookback> }`. Shorter histories fall back to the existing
+#     `PercentOfStated 1.0` default so the math layer never throws on an
+#     under-supplied stream.
+#   - FHA, VA, USDA, and the PortfolioBase channel all declare
+#     `incomePolicies.selfEmployedAveragingMonths: 24` (HUD 4000.1
+#     II.A.4.c.iv, VA 26-7 Ch. 4, USDA HB-1-3555 Ch. 9, portfolio
+#     convention). The math bridge is fully covered by unit tests at the
+#     `@loanscope/math` layer that pass `programOverrides` directly.
+#   - Backward compatibility: an explicit per-stream `qualifyingPolicy`
+#     always wins; non-SE streams with `historicalAmounts` are ignored by
+#     the bridge and continue to follow their type defaults; programs
+#     without `selfEmployedAveragingMonths` use `monthlyAmount` at face
+#     value (factor 1.0).
+#   - Numerical sanity: the 24 historicalAmounts below sum to $203,000
+#     (average $8,458.33/mo). `monthlyAmount` is set to $9,200 so the
+#     math bridge's averaging effect is visible at the API boundary —
+#     calling `sumQualifyingIncomeWithPolicies(streams, { selfEmployedAveragingMonths: 24 })`
+#     returns $8,458.33, not the stated $9,200.
+#
+# Engine-wiring status: the previously-deferred `evaluate.ts` seam has
+# landed. The engine now seeds the matched product's `incomePolicies`
+# (and the parallel `transaction.borrowerBlendPolicy`) into `rawInputs`,
+# so end-to-end `evaluate` activates the SE-averaging bridge per
+# matched product. Running the smoke command below: FHA, VA, USDA, and
+# UWM Jumbo Pink (PortfolioBase child) report `qualifyingIncomeMonthly`
+# = $8,458.33; agency conforming and streamline products correctly fall
+# through to the stated $9,200 because their lineage does not declare
+# `selfEmployedAveragingMonths`. Pinned by
+# `packages/loanscope/engine/src/__tests__/engine-policies.test.ts`.
+#
+# Loan sizing: $640,000 purchase, $128,000 down (20%), $512,000 loan
+# (80% LTV, conventional conforming territory in most counties).
+#
+# Smoke command:
+#   pnpm loanscope evaluate --config examples/scenarios/34-se-24mo-averaging.yaml
+
+transaction:
+  id: se-24mo-averaging
+  productSource:
+    kind: generic
+  scenario:
+    loanPurpose: Purchase
+    occupancy: Primary
+    propertyType: SFR
+    requestedLoanAmount: 512000
+    purchasePrice: 640000
+    downPayment: 128000
+    appraisedValue: 640000
+    units: 1
+    location:
+      stateCode: TX
+      county: Travis
+    rateNote:
+      noteRatePct: 6.75
+      amortizationMonths: 360
+      productKind: Fixed
+    monthlyHousing:
+      propertyTax: 720
+      insurance: 185
+      hoa: 0
+      mi: 0
+    closingCosts:
+      estimatedTotal: 13250
+
+  borrowers:
+    - id: b1
+      fico: 740
+      ficoScores: [738, 740, 744]
+      incomes:
+        - id: inc_b1_se
+          borrowerId: b1
+          type: SelfEmployed
+          # Stated current monthly draw. Used by products without an
+          # averaging window; replaced by the AveragedMonths result for
+          # FHA / VA / USDA / PortfolioBase.
+          monthlyAmount: 9200
+          qualifying: true
+          # 24 trailing months of net business income (most recent last).
+          # Sum = 203,000; average = 8,458.33/mo.
+          historicalAmounts:
+            - 7800
+            - 7900
+            - 8000
+            - 8100
+            - 8050
+            - 8150
+            - 8200
+            - 8300
+            - 8250
+            - 8400
+            - 8350
+            - 8500
+            - 8550
+            - 8600
+            - 8500
+            - 8650
+            - 8700
+            - 8750
+            - 8800
+            - 8850
+            - 8900
+            - 8950
+            - 9000
+            - 8750
+
+  assets:
+    - id: checking_b1
+      type: Checking
+      ownerBorrowerIds: [b1]
+      amount: 175000
+      canUseForClose: true
+      canUseForReserves: true
+    - id: business_b1
+      type: Business
+      ownerBorrowerIds: [b1]
+      amount: 95000
+      haircutRatio: 0.5
+      canUseForClose: false
+      canUseForReserves: true
+    - id: brokerage_b1
+      type: Brokerage
+      ownerBorrowerIds: [b1]
+      amount: 220000
+      haircutRatio: 0.7
+      canUseForClose: false
+      canUseForReserves: true
+
+  liabilities:
+    - id: auto_b1
+      type: Auto
+      borrowerIds: [b1]
+      monthlyPayment: 510
+      unpaidBalance: 18200
+    - id: cc_b1
+      type: CreditCard
+      borrowerIds: [b1]
+      monthlyPayment: 145
+      unpaidBalance: 4150
+
+  variants:
+    - id: default
+      label: SE borrower with 24-mo historicalAmounts (math bridge averages to $8,458.33/mo)
+      includedBorrowerIds: [b1]
+      forcePayoffLiabilityIds: []

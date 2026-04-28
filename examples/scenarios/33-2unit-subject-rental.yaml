@@ -1,0 +1,102 @@
+# Example 33 — 2-unit primary purchase with subject-property rental income.
+#
+# Demonstrates:
+#   - The new `scenario.subjectPropertyRental` field (Feature 3). On a 2-4
+#     unit primary purchase the borrower occupies one unit and rents the
+#     others; the engine adds a qualifying-income uplift of
+#     `grossMonthlyRent * (1 - vacancyFactor)` to the canonical
+#     `qualifyingIncomeMonthly` total.
+#   - End-to-end flow: the `calculate-subject-rental-income` edge produces
+#     the `subjectRentalIncome` intermediate from this field plus `units`,
+#     and the `apply-income-policies` edge consumes that intermediate as a
+#     fourth input alongside borrower income streams. The result is a
+#     single `qualifyingIncomeMonthly` figure with both contributions.
+#   - `vacancyFactor: 0.25` is the industry-standard 75% net haircut on
+#     appraisal-derived gross rents. Lower-vacancy markets can override
+#     (down to 0); higher-vacancy or appraiser-cautioned scenarios can
+#     raise toward 1.0. The engine clamps to [0, 1] at the boundary.
+#   - The borrower-occupied unit is assumed to already be excluded from
+#     `grossMonthlyRent`; supply only the rentable units' aggregate gross.
+#     Here a 2-unit duplex with one rentable unit at $1,800/mo gross →
+#     $1,800 * 0.75 = $1,350/mo qualifying uplift.
+#
+# Loan sizing: $560,000 purchase, $140,000 down (25%), $420,000 loan
+# (~75% LTV). 2-unit primary remains conventional conforming in most
+# counties (2-unit conforming limit is well above this loan amount).
+#
+# Smoke command:
+#   pnpm loanscope evaluate --config examples/scenarios/33-2unit-subject-rental.yaml
+
+transaction:
+  id: two-unit-subject-rental
+  productSource:
+    kind: generic
+  scenario:
+    loanPurpose: Purchase
+    occupancy: Primary
+    propertyType: MultiUnit
+    requestedLoanAmount: 420000
+    purchasePrice: 560000
+    downPayment: 140000
+    appraisedValue: 560000
+    units: 2
+    location:
+      stateCode: PA
+      county: Allegheny
+    rateNote:
+      noteRatePct: 6.875
+      amortizationMonths: 360
+      productKind: Fixed
+    monthlyHousing:
+      propertyTax: 615
+      insurance: 195
+      hoa: 0
+      mi: 0
+    closingCosts:
+      estimatedTotal: 11500
+    subjectPropertyRental:
+      grossMonthlyRent: 1800   # Aggregate gross on the non-owner-occupied unit(s)
+      vacancyFactor: 0.25      # 75% net (industry-standard appraisal haircut)
+
+  borrowers:
+    - id: b1
+      fico: 740
+      ficoScores: [738, 740, 744]
+      incomes:
+        - id: inc_b1_w2
+          borrowerId: b1
+          type: W2
+          monthlyAmount: 9500
+          qualifying: true
+
+  assets:
+    - id: checking_b1
+      type: Checking
+      ownerBorrowerIds: [b1]
+      amount: 165000
+      canUseForClose: true
+      canUseForReserves: true
+    - id: savings_b1
+      type: Savings
+      ownerBorrowerIds: [b1]
+      amount: 75000
+      canUseForClose: true
+      canUseForReserves: true
+
+  liabilities:
+    - id: auto_b1
+      type: Auto
+      borrowerIds: [b1]
+      monthlyPayment: 425
+      unpaidBalance: 16200
+    - id: cc_b1
+      type: CreditCard
+      borrowerIds: [b1]
+      monthlyPayment: 95
+      unpaidBalance: 2850
+
+  variants:
+    - id: default
+      label: 2-unit primary, $1,800 gross subject rental @ 25% vacancy
+      includedBorrowerIds: [b1]
+      forcePayoffLiabilityIds: []

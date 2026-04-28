@@ -1,0 +1,49 @@
+{
+  "name": "@config/eslint",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Shared ESLint configuration for workspace",
+  "main": "index.js",
+  "type": "module",
+  "exports": {
+    ".": "./index.js",
+    "./base": "./base.js",
+    "./next": "./next.js",
+    "./next-js": "./next.js",
+    "./react-internal": "./react-internal.js"
+  },
+  "dependencies": {
+    "@eslint/js": "^10.0.1",
+    "@next/eslint-plugin-next": "^16.2.1",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-only-warn": "^1.2.1",
+    "eslint-plugin-turbo": "^2.8.20",
+    "globals": "^17.4.0",
+    "typescript-eslint": "^8.57.2"
+  },
+  "peerDependencies": {
+    "eslint": ">=8.57.0",
+    "typescript": "^5.9.3"
+  },
+  "scripts": {
+    "build": "echo 'No build needed'",
+    "test": "echo 'No tests for config package'",
+    "lint": "echo 'Self-linting skipped'",
+    "clean": "echo 'No build artifacts to clean'"
+  },
+  "license": "MIT",
+  "author": "Rami Isaac <raisaac@icloud.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ramiisaac/loanscope.git",
+    "directory": "config/eslint"
+  },
+  "homepage": "https://github.com/ramiisaac/loanscope#readme",
+  "bugs": {
+    "url": "https://github.com/ramiisaac/loanscope/issues"
+  },
+  "keywords": [],
+  "devDependencies": {
+    "@eslint-react/eslint-plugin": "^3.0.0"
+  }
+}

@@ -1,0 +1,22 @@
+quickQuote:
+  loanAmount: 1000000
+  purchasePrice: 1250000
+  fico: 740
+  occupancy: Primary
+  propertyType: SFR
+  loanPurpose: Purchase
+  monthlyIncome: 20000
+  monthlyDebts: 2000
+  annualTaxes: 7200
+  annualInsurance: 1800
+  monthlyHoa: 0
+  closingCosts: 15000
+  totalLiquidAssets: 150000
+  noteRatePct: 6.75
+  amortizationMonths: 360
+  loanType: Conventional
+  units: 1
+  stateCode: CA
+  isFirstTimeHomebuyer: false
+  isSelfEmployed: false
+  numberOfBorrowers: 1

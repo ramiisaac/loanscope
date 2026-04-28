@@ -1,0 +1,122 @@
+# Example 30 — Multi-borrower scenario with income-weighted FICO blend.
+#
+# Demonstrates:
+#   - Two borrowers with materially distinct FICO scores (760 vs. 660) and
+#     materially distinct qualifying monthly income ($16,500 vs. $5,500).
+#     With a naive lowest-mid policy the qualifying FICO would collapse to
+#     660; with an income-weighted average it lifts toward the primary
+#     earner's profile, which is the underwriting outcome agency overlays
+#     increasingly recognize for joint applications.
+#   - Transaction-level `borrowerBlendPolicy` of kind `WeightedAverage` with
+#     `incomeWeighted: true` (matches the `borrowerBlendPolicySchema`
+#     discriminated union exactly).
+#   - Two variants: `joint` (both borrowers) and `solo` (primary earner
+#     only) so a single `evaluate` run surfaces the contrast between blended
+#     and single-borrower qualification.
+#
+# Loan sizing: $720,000 purchase, $144,000 down (20%), $576,000 loan
+# (80% LTV, conventional conforming territory in most counties).
+#
+# Smoke command:
+#   pnpm loanscope evaluate --config examples/scenarios/30-multi-borrower-blend.yaml
+
+transaction:
+  id: multi-borrower-blend
+  productSource:
+    kind: generic
+  borrowerBlendPolicy:
+    kind: WeightedAverage
+    incomeWeighted: true
+  scenario:
+    loanPurpose: Purchase
+    occupancy: Primary
+    propertyType: SFR
+    requestedLoanAmount: 576000
+    purchasePrice: 720000
+    downPayment: 144000
+    appraisedValue: 720000
+    units: 1
+    location:
+      stateCode: WA
+      county: King
+    rateNote:
+      noteRatePct: 6.75
+      amortizationMonths: 360
+      productKind: Fixed
+    monthlyHousing:
+      propertyTax: 750
+      insurance: 175
+      hoa: 0
+      mi: 0
+    closingCosts:
+      estimatedTotal: 14500
+
+  borrowers:
+    - id: b1
+      fico: 760
+      ficoScores: [758, 760, 764]
+      incomes:
+        - id: inc_b1_w2
+          borrowerId: b1
+          type: W2
+          monthlyAmount: 16500
+          qualifying: true
+
+    - id: b2
+      fico: 660
+      ficoScores: [658, 660, 664]
+      incomes:
+        - id: inc_b2_w2
+          borrowerId: b2
+          type: W2
+          monthlyAmount: 5500
+          qualifying: true
+
+  assets:
+    - id: checking_joint
+      type: Checking
+      ownerBorrowerIds: [b1, b2]
+      amount: 95000
+      canUseForClose: true
+      canUseForReserves: true
+    - id: savings_b1
+      type: Savings
+      ownerBorrowerIds: [b1]
+      amount: 110000
+      canUseForClose: true
+      canUseForReserves: true
+    - id: brokerage_b1
+      type: Brokerage
+      ownerBorrowerIds: [b1]
+      amount: 180000
+      haircutRatio: 0.7
+      canUseForClose: false
+      canUseForReserves: true
+
+  liabilities:
+    - id: auto_b1
+      type: Auto
+      borrowerIds: [b1]
+      monthlyPayment: 575
+      unpaidBalance: 19500
+    - id: sl_b2
+      type: StudentLoan
+      borrowerIds: [b2]
+      monthlyPayment: 320
+      unpaidBalance: 28500
+    - id: cc_b2
+      type: CreditCard
+      borrowerIds: [b2]
+      monthlyPayment: 145
+      unpaidBalance: 4200
+
+  variants:
+    - id: joint
+      label: Joint (B1 + B2), income-weighted FICO blend
+      includedBorrowerIds: [b1, b2]
+      forcePayoffLiabilityIds: []
+
+    - id: solo
+      label: Solo (B1 primary earner only)
+      includedBorrowerIds: [b1]
+      forcePayoffLiabilityIds: []

@@ -1,0 +1,60 @@
+import {
+  AusFinding,
+  BuydownPayer,
+  BuydownType,
+  Channel,
+  LoanPurpose,
+  LoanType,
+  MiType,
+  Occupancy,
+  ProductDefinition,
+  PropertyType,
+  money,
+  months,
+  ratio,
+} from "@loanscope/domain";
+
+export const GovernmentBase: ProductDefinition = {
+  id: "government_base",
+  name: "Government Base",
+  channel: Channel.Government,
+  loanType: LoanType.FHA,
+  variants: [],
+  baseConstraints: {
+    allowedPurposes: [LoanPurpose.Purchase, LoanPurpose.RateTermRefi, LoanPurpose.CashOutRefi],
+    allowedOccupancies: [Occupancy.Primary],
+    allowedPropertyTypes: [PropertyType.SFR, PropertyType.Condo, PropertyType.Townhome],
+    unitsAllowed: [1, 2, 3, 4],
+    allowedTerms: [360, 180],
+    minLoanAmount: money(50000),
+    maxLoanAmount: money(766550),
+    minFico: 580,
+    maxDTIRatio: ratio(0.57),
+    maxLTVRatio: ratio(0.965),
+    maxCLTVRatio: ratio(0.965),
+    reservesPolicy: { kind: "AUSDetermined" },
+    miRules: {
+      required: true,
+      allowedTypes: [MiType.BPMI, MiType.SinglePremium],
+    },
+    ausRules: {
+      requiredFindings: [AusFinding.Approve, AusFinding.Accept],
+    },
+    buydownRules: {
+      allowed: true,
+      allowedTypes: [BuydownType.OneZero, BuydownType.TwoOne, BuydownType.ThreeTwoOne],
+      allowedPayers: [BuydownPayer.Seller, BuydownPayer.Lender],
+      primaryOnly: true,
+      purchaseOnly: true,
+    },
+    cashOutConstraints: {
+      seasoningMonths: months(12),
+      listedForSaleRestriction: true,
+    },
+    appraisalRules: {
+      waiverAllowed: false,
+      tiers: [{ loanAmountThreshold: money(0), appraisalsRequired: 1 }],
+    },
+  },
+  metadata: { base: true },
+};

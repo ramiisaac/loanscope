@@ -1,0 +1,61 @@
+{
+  "name": "@loanscope/program-rules",
+  "version": "0.1.0",
+  "private": false,
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsup",
+    "typecheck": "tsc -p tsconfig.check.json --noEmit",
+    "lint": "eslint .",
+    "clean": "rimraf dist .turbo",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "@loanscope/domain": "workspace:*"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "devDependencies": {
+    "@config/eslint": "workspace:*",
+    "eslint": "^10.1.0",
+    "vitest": "^4.1.1"
+  },
+  "license": "MIT",
+  "author": "Rami Isaac <raisaac@icloud.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ramiisaac/loanscope.git",
+    "directory": "packages/loanscope/program-rules"
+  },
+  "homepage": "https://github.com/ramiisaac/loanscope#readme",
+  "bugs": {
+    "url": "https://github.com/ramiisaac/loanscope/issues"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "sideEffects": false,
+  "files": [
+    "LICENSE",
+    "README.md",
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": [
+    "mortgage",
+    "underwriting",
+    "loanscope",
+    "rules-engine",
+    "resolver"
+  ],
+  "description": "Canonical ProgramRules resolver primitives (toProgramRules, mergeRules, resolveVariant, findApplicableTier) shared by the LoanScope engine and product packages."
+}

@@ -1,0 +1,65 @@
+{
+  "name": "@loanscope/products",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsup src/index.ts --format esm --dts",
+    "typecheck": "tsc -p tsconfig.check.json --noEmit",
+    "lint": "eslint .",
+    "clean": "rimraf dist .turbo",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "@loanscope/domain": "workspace:*",
+    "@loanscope/program-rules": "workspace:*"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "devDependencies": {
+    "@config/eslint": "workspace:*",
+    "@loanscope/math": "workspace:*",
+    "eslint": "^10.1.0",
+    "vitest": "^4.1.1"
+  },
+  "license": "MIT",
+  "author": "Rami Isaac <raisaac@icloud.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ramiisaac/loanscope.git",
+    "directory": "packages/loanscope/products"
+  },
+  "homepage": "https://github.com/ramiisaac/loanscope#readme",
+  "bugs": {
+    "url": "https://github.com/ramiisaac/loanscope/issues"
+  },
+  "keywords": [
+    "mortgage",
+    "underwriting",
+    "loanscope",
+    "catalog",
+    "products",
+    "agency",
+    "government"
+  ],
+  "private": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "sideEffects": false,
+  "files": [
+    "LICENSE",
+    "README.md",
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "description": "Declarative LoanScope mortgage product catalogs (Agency, Government, Portfolio) with extends-based inheritance and per-occupancy / per-tier constraints."
+}

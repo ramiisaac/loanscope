@@ -1,0 +1,26 @@
+import type { NodeDefinition } from "@loanscope/graph";
+
+export const intermediateNodes: NodeDefinition[] = [
+  { id: "ltv", kind: "computed", valueType: "Ratio" },
+  { id: "cltv", kind: "computed", valueType: "Ratio" },
+  { id: "principalAndInterest", kind: "computed", valueType: "Money" },
+  { id: "qualifyingPayment", kind: "computed", valueType: "Money" },
+  { id: "housingMonthly", kind: "computed", valueType: "Money" },
+  { id: "pitiMonthly", kind: "computed", valueType: "Money" },
+  { id: "qualifyingIncomeMonthly", kind: "computed", valueType: "Money" },
+  { id: "monthlyLiabilities", kind: "computed", valueType: "Money" },
+  { id: "dti", kind: "computed", valueType: "Ratio" },
+  { id: "fundsToClose", kind: "computed", valueType: "Money" },
+  { id: "payoffsRequired", kind: "computed", valueType: "Money" },
+  { id: "totalCashRequired", kind: "computed", valueType: "Money" },
+  { id: "assetAllocation", kind: "computed", valueType: "Object" },
+  { id: "remainingReserves", kind: "computed", valueType: "Money" },
+  { id: "requiredReserveMonths", kind: "computed", valueType: "Months" },
+  { id: "requiredReservesDollars", kind: "computed", valueType: "Money" },
+  { id: "upfrontGovernmentFee", kind: "computed", valueType: "Money" },
+  { id: "monthlyGovernmentFee", kind: "computed", valueType: "Money" },
+  { id: "blendedFico", kind: "computed", valueType: "Enum" },
+  { id: "loanAmount", kind: "computed", valueType: "Money" },
+  { id: "baseLtv", kind: "computed", valueType: "Ratio" },
+  { id: "subjectRentalIncome", kind: "computed", valueType: "Money" },
+];

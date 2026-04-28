@@ -1,0 +1,69 @@
+{
+  "name": "@loanscope/db",
+  "version": "0.1.0",
+  "private": false,
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsup src/index.ts --format esm --dts",
+    "typecheck": "tsc -p tsconfig.check.json --noEmit",
+    "lint": "eslint .",
+    "clean": "rimraf dist .turbo",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate"
+  },
+  "dependencies": {
+    "@loanscope/domain": "workspace:*",
+    "@loanscope/lenders": "workspace:*",
+    "better-sqlite3": "^11.9.1",
+    "drizzle-orm": "^0.44.2"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "devDependencies": {
+    "@config/eslint": "workspace:*",
+    "@types/better-sqlite3": "^7.6.13",
+    "drizzle-kit": "^0.31.4",
+    "eslint": "^10.1.0",
+    "vitest": "^4.1.1"
+  },
+  "license": "MIT",
+  "author": "Rami Isaac <raisaac@icloud.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ramiisaac/loanscope.git",
+    "directory": "packages/loanscope/db"
+  },
+  "homepage": "https://github.com/ramiisaac/loanscope#readme",
+  "bugs": {
+    "url": "https://github.com/ramiisaac/loanscope/issues"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "sideEffects": false,
+  "files": [
+    "LICENSE",
+    "README.md",
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": [
+    "mortgage",
+    "underwriting",
+    "loanscope",
+    "sqlite",
+    "drizzle",
+    "persistence"
+  ],
+  "description": "SQLite + Drizzle persistence adapter for LoanScope: schema, migrations, repositories, mappers, custom-product service, persistent lender registry, and audit sessions."
+}

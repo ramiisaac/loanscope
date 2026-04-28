@@ -1,0 +1,12 @@
+{
+  "name": "@config/typescript",
+  "version": "0.0.0",
+  "private": true,
+  "license": "MIT",
+  "author": "Rami Isaac <raisaac@icloud.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ramiisaac/loanscope.git",
+    "directory": "config/typescript"
+  }
+}

@@ -1,0 +1,91 @@
+name: Release
+
+# Gated release workflow. Runs only on manual dispatch until the team is ready
+# to enable automated publishing. Once ready, add `push:` with `branches: [main]`
+# to restore the standard Changesets PR flow (changesets/action will then open a
+# "Version Packages" PR on every main push; merging it triggers `publish`).
+on:
+  workflow_dispatch:
+    inputs:
+      dry-run:
+        description: "Run changeset publish with --dry-run (no registry writes)"
+        type: boolean
+        default: true
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    name: Version & publish
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      packages: write
+      id-token: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          registry-url: https://registry.npmjs.org
+          scope: "@loanscope"
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Typecheck
+        run: pnpm typecheck:loanscope
+
+      - name: Build
+        run: pnpm build:loanscope
+
+      - name: Test
+        run: pnpm test:loanscope
+
+      - name: Package validation
+        run: pnpm attw
+
+      - name: Create Release Pull Request or Publish
+        if: ${{ inputs.dry-run != true }}
+        uses: changesets/action@v1
+        with:
+          publish: pnpm release
+          version: pnpm version-packages
+          commit: "chore(release): version packages"
+          title: "chore(release): version packages"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_CONFIG_PROVENANCE: true
+
+      - name: Publish dry-run
+        if: ${{ inputs.dry-run == true }}
+        run: |
+          echo "::group::Pending changesets"
+          pnpm changeset status --verbose || true
+          echo "::endgroup::"
+          echo "::group::What version would apply"
+          # Render the planned version bump without writing a tag or touching the registry.
+          # `changeset version` mutates package.json / CHANGELOG files; we run it and then
+          # revert the working tree so the dry-run is idempotent.
+          pnpm changeset version || true
+          git --no-pager diff --stat
+          git checkout -- .
+          echo "::endgroup::"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

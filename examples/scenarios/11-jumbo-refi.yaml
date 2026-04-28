@@ -1,0 +1,87 @@
+# Rate/Term Refinance - Jumbo
+# Refinance existing jumbo loan with mortgage payoff
+
+transaction:
+  id: jumbo-refi
+  productSource:
+    kind: generic
+
+  scenario:
+    requestedLoanAmount: 800000
+    appraisedValue: 1300000
+    downPayment: 0
+    occupancy: Primary
+    loanPurpose: RateTermRefi
+    propertyType: SFR
+    units: 1
+    location:
+      stateCode: CA
+      county: Orange
+    rateNote:
+      noteRatePct: 6.625
+      amortizationMonths: 360
+      productKind: Fixed
+    monthlyHousing:
+      propertyTax: 1354
+      insurance: 280
+      hoa: 200
+      mi: 0
+    closingCosts:
+      estimatedTotal: 15000
+
+  borrowers:
+    - id: b1
+      fico: 760
+      ficoScores: [762, 758, 760]
+      incomes:
+        - id: inc_b1_w2
+          borrowerId: b1
+          type: W2
+          monthlyAmount: 18000
+          qualifying: true
+        - id: inc_b1_bonus
+          borrowerId: b1
+          type: Bonus
+          monthlyAmount: 3000
+          qualifying: true
+
+  assets:
+    - id: checking_b1
+      type: Checking
+      ownerBorrowerIds: [b1]
+      amount: 150000
+      canUseForClose: true
+      canUseForReserves: true
+    - id: savings_b1
+      type: Savings
+      ownerBorrowerIds: [b1]
+      amount: 250000
+      canUseForClose: true
+      canUseForReserves: true
+    - id: retirement_b1
+      type: Retirement401k
+      ownerBorrowerIds: [b1]
+      amount: 400000
+      canUseForClose: false
+      canUseForReserves: true
+      haircutRatio: 0.6
+
+  liabilities:
+    - id: mortgage_existing
+      type: Mortgage
+      borrowerIds: [b1]
+      monthlyPayment: 5200
+      unpaidBalance: 795000
+      payoffAtClose: true
+      payoffAmount: 796500
+    - id: auto_b1
+      type: Auto
+      borrowerIds: [b1]
+      monthlyPayment: 650
+      unpaidBalance: 22000
+
+  variants:
+    - id: default
+      label: Refi with mortgage payoff
+      includedBorrowerIds: [b1]
+      forcePayoffLiabilityIds: [mortgage_existing]
