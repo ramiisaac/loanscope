@@ -3,6 +3,30 @@
   "compilerOptions": {
     "paths": {
       "@/*": ["./*"],
+      "@loanscope/calculations": ["../../packages/loanscope/calculations/src/index.ts"],
+      "@loanscope/calculations/*": ["../../packages/loanscope/calculations/src/*"],
+      "@loanscope/compare": ["../../packages/loanscope/compare/src/index.ts"],
+      "@loanscope/compare/*": ["../../packages/loanscope/compare/src/*"],
+      "@loanscope/config": ["../../packages/loanscope/config/src/index.ts"],
+      "@loanscope/config/*": ["../../packages/loanscope/config/src/*"],
+      "@loanscope/db": ["../../packages/loanscope/db/src/index.ts"],
+      "@loanscope/db/*": ["../../packages/loanscope/db/src/*"],
+      "@loanscope/domain": ["../../packages/loanscope/domain/src/index.ts"],
+      "@loanscope/domain/*": ["../../packages/loanscope/domain/src/*"],
+      "@loanscope/engine": ["../../packages/loanscope/engine/src/index.ts"],
+      "@loanscope/engine/*": ["../../packages/loanscope/engine/src/*"],
+      "@loanscope/graph": ["../../packages/loanscope/graph/src/index.ts"],
+      "@loanscope/graph/*": ["../../packages/loanscope/graph/src/*"],
+      "@loanscope/lenders": ["../../packages/loanscope/lenders/src/index.ts"],
+      "@loanscope/lenders/*": ["../../packages/loanscope/lenders/src/*"],
+      "@loanscope/math": ["../../packages/loanscope/math/src/index.ts"],
+      "@loanscope/math/*": ["../../packages/loanscope/math/src/*"],
+      "@loanscope/products": ["../../packages/loanscope/products/src/index.ts"],
+      "@loanscope/products/*": ["../../packages/loanscope/products/src/*"],
+      "@loanscope/program-rules": ["../../packages/loanscope/program-rules/src/index.ts"],
+      "@loanscope/program-rules/*": ["../../packages/loanscope/program-rules/src/*"],
+      "@loanscope/sim": ["../../packages/loanscope/sim/src/index.ts"],
+      "@loanscope/sim/*": ["../../packages/loanscope/sim/src/*"],
       "@workspace/ui/*": ["../../packages/ui/src/*"]
     },
     "plugins": [
@@ -11,12 +35,6 @@
       }
     ]
   },
-  "include": [
-    "next-env.d.ts",
-    "next.config.ts",
-    "**/*.ts",
-    "**/*.tsx",
-    ".next/types/**/*.ts"
-  ],
+  "include": ["next-env.d.ts", "next.config.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
   "exclude": ["node_modules"]
 }

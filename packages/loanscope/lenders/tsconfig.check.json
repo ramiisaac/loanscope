@@ -7,8 +7,10 @@
       "@loanscope/domain/*": ["../domain/src/*"],
       "@loanscope/products": ["../products/src/index.ts"],
       "@loanscope/products/*": ["../products/src/*"],
-    },
+      "@loanscope/program-rules": ["../program-rules/src/index.ts"],
+      "@loanscope/program-rules/*": ["../program-rules/src/*"]
+    }
   },
   "include": ["src/**/*"],
-  "exclude": ["dist", "node_modules"],
+  "exclude": ["dist", "node_modules"]
 }

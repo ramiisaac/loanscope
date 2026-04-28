@@ -3,6 +3,8 @@
   "compilerOptions": {
     "rootDir": "..",
     "paths": {
+      "@loanscope/calculations": ["../calculations/src/index.ts"],
+      "@loanscope/calculations/*": ["../calculations/src/*"],
       "@loanscope/compare": ["../compare/src/index.ts"],
       "@loanscope/compare/*": ["../compare/src/*"],
       "@loanscope/config": ["../config/src/index.ts"],
@@ -13,10 +15,16 @@
       "@loanscope/domain/*": ["../domain/src/*"],
       "@loanscope/engine": ["../engine/src/index.ts"],
       "@loanscope/engine/*": ["../engine/src/*"],
+      "@loanscope/graph": ["../graph/src/index.ts"],
+      "@loanscope/graph/*": ["../graph/src/*"],
       "@loanscope/lenders": ["../lenders/src/index.ts"],
       "@loanscope/lenders/*": ["../lenders/src/*"],
+      "@loanscope/math": ["../math/src/index.ts"],
+      "@loanscope/math/*": ["../math/src/*"],
       "@loanscope/products": ["../products/src/index.ts"],
       "@loanscope/products/*": ["../products/src/*"],
+      "@loanscope/program-rules": ["../program-rules/src/index.ts"],
+      "@loanscope/program-rules/*": ["../program-rules/src/*"],
       "@loanscope/sim": ["../sim/src/index.ts"],
       "@loanscope/sim/*": ["../sim/src/*"]
     }

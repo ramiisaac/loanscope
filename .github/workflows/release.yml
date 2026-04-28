@@ -1,5 +1,8 @@
 name: Release
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 # Gated release workflow. Runs only on manual dispatch until the team is ready
 # to enable automated publishing. Once ready, add `push:` with `branches: [main]`
 # to restore the standard Changesets PR flow (changesets/action will then open a

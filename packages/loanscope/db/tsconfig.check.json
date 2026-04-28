@@ -8,7 +8,9 @@
       "@loanscope/lenders": ["../lenders/src/index.ts"],
       "@loanscope/lenders/*": ["../lenders/src/*"],
       "@loanscope/products": ["../products/src/index.ts"],
-      "@loanscope/products/*": ["../products/src/*"]
+      "@loanscope/products/*": ["../products/src/*"],
+      "@loanscope/program-rules": ["../program-rules/src/index.ts"],
+      "@loanscope/program-rules/*": ["../program-rules/src/*"]
     }
   },
   "include": ["src/**/*"],

@@ -5,10 +5,12 @@
     "paths": {
       "@loanscope/domain": ["../domain/src/index.ts"],
       "@loanscope/domain/*": ["../domain/src/*"],
+      "@loanscope/math": ["../math/src/index.ts"],
+      "@loanscope/math/*": ["../math/src/*"],
       "@loanscope/program-rules": ["../program-rules/src/index.ts"],
-      "@loanscope/program-rules/*": ["../program-rules/src/*"],
-    },
+      "@loanscope/program-rules/*": ["../program-rules/src/*"]
+    }
   },
   "include": ["src/**/*"],
-  "exclude": ["dist", "node_modules"],
+  "exclude": ["dist", "node_modules"]
 }
